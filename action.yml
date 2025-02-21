@@ -1,0 +1,27 @@
+name: "boton"
+description: "Realiza revision de codigo basandose en modelos LLMs, aunque por ahora no hace nada -es solo un boton-"
+author: "Alguien misterioso"
+
+inputs:
+  llm_endpoint:
+    description: "Endpoint para la API del LLM"
+    required: true
+  api_key:
+    description: "API key para el servicio de LLM"
+    required: true
+  github_token:
+    description: "El token de github para poder postear comentarios"
+    required: true
+  prompt_file:
+    description: "Directorio en donde se encuentra el archivo con prompts"
+    required: false
+    default: ".github/prompts.txt"
+
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  env:
+    LLM_ENDPOINT: ${{ inputs.llm_endpoint }}
+    API_KEY: ${{ inputs.api_key }}
+    GITHUB_TOKEN: ${{ inputs.github_token }}
+    PROMPT_FILE: ${{ inputs.prompt_file }}
