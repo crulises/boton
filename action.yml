@@ -13,9 +13,9 @@ inputs:
     description: "El token de github para poder postear comentarios"
     required: true
   prompt_file:
-    description: "Directorio en donde se encuentra el archivo con prompts"
+    description: "Directorio en donde se encuentra el archivo con prompts. Default: .github/prompts.yml"
     required: false
-    default: ".github/prompts.txt"
+    default: ".github/prompts.yml"
 
 runs:
   using: "docker"

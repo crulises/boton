@@ -1,7 +1,8 @@
-import os
-import requests
 import json
 import logging
+import os
+import requests
+import yaml
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 LLM_ENDPOINT = os.getenv("LLM_ENDPOINT")
@@ -72,8 +73,10 @@ def obtener_diferencia_archivo(numero_pr, ruta_archivo):
 
 
 def revisar_codigo_con_llm(diff_codigo):
-    _ = diff_codigo
-    print("Esto es un PoC No esta implementado.")
+    _, prompts = diff_codigo, None
+    with open(PROMPT_FILE, "r") as f:
+        prompts = yaml.safe_load(f)
+    logger.info(f"Esto es un PoC No esta implementado. Acá lo que se leyo del archivo prompts\n{prompts}")
     return "Esto es un comentario del llm..."
 
 
