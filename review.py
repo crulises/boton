@@ -13,8 +13,8 @@ REPOSITORIO_GITHUB = os.getenv("GITHUB_REPOSITORY")
 EVENTO_GITHUB = os.getenv("GITHUB_EVENT_PATH")
 # Modificar para poder optar por proveedor
 cliente = AzureOpenAI(
-   azure_endpoint=endpoint,
-   api_key=openai_api_key,
+   azure_endpoint=LLM_ENDPOINT,
+   api_key=API_KEY,
    api_version="2024-05-01-preview",
 )
 
