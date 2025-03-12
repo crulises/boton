@@ -92,7 +92,7 @@ def revisar_codigo_con_llm(diff_codigo, cliente):
             "content": diff_codigo}
         ]
         try:
-          response = client.chat.completions.create(
+          response = cliente.chat.completions.create(
               model="openai_code_review",
               messages=message_text,
               temperature=0,
