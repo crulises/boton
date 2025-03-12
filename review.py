@@ -3,6 +3,7 @@ import logging
 import os
 import requests
 import yaml
+from openai import AzureOpenAI
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 LLM_ENDPOINT = os.getenv("LLM_ENDPOINT")
@@ -10,6 +11,12 @@ API_KEY = os.getenv("API_KEY")
 PROMPT_FILE = os.getenv("PROMPT_FILE")
 REPOSITORIO_GITHUB = os.getenv("GITHUB_REPOSITORY")
 EVENTO_GITHUB = os.getenv("GITHUB_EVENT_PATH")
+# Modificar para poder optar por proveedor
+cliente = AzureOpenAI(
+   azure_endpoint=endpoint,
+   api_key=openai_api_key,
+   api_version="2024-05-01-preview",
+)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -72,12 +79,36 @@ def obtener_diferencia_archivo(numero_pr, ruta_archivo):
         raise
 
 
-def revisar_codigo_con_llm(diff_codigo):
-    _, prompts = diff_codigo, None
+def revisar_codigo_con_llm(diff_codigo, cliente):
+    p = None
     with open(PROMPT_FILE, "r") as f:
-        prompts = yaml.safe_load(f)
-    logger.info(f"Esto es un PoC No esta implementado. Acá lo que se leyo del archivo prompts\n{prompts}")
-    return "Esto es un comentario del llm..."
+        p = yaml.safe_load(f)
+    prompts = [{"role": "developer","content": prompt["prompt"]} for prompt in p["prompts"]] 
+    responses = []
+    for p in prompts:
+        message_text = [
+            p,
+            {"role": "user",
+            "content": diff_codigo}
+        ]
+        try:
+          response = client.chat.completions.create(
+              model="openai_code_review",
+              messages=message_text,
+              temperature=0,
+              top_p=0.95,
+              frequency_penalty=0,
+              presence_penalty=0,
+              stop=None
+          )
+          if response.choices:
+            review_text_e = response.choices[0].message.content.strip()
+          else:
+            review_text_e = f"No correct answer from OpenAI!\n{response.text}"
+        except Exception as e:
+            review_text_e = f"OpenAI failed to generate a review: {e}"
+        responses.append(review_text_e)
+    return responses
 
 
 def comentar_en_pr(numero_pr, comentario):
@@ -112,12 +143,15 @@ def main():
         numero_pr = obtener_numero_pr()
         archivos_modificados = obtener_archivos_modificados(numero_pr)
 
+        diferencias = []
         for archivo in archivos_modificados:
-            diferencia = obtener_diferencia_archivo(numero_pr, archivo)
-            if diferencia:
-                # Esto dispararía el LLM la idea es que esto es un PoC
-                revision = revisar_codigo_con_llm(diferencia)
-                comentar_en_pr(numero_pr, f"#### Archivo: `{archivo}`\n{revision}")
+            diferencias.append(obtener_diferencia_archivo(numero_pr, archivo)) 
+
+        if len(diferencias) > 0:
+            # Esto dispararía el LLM la idea es que esto es un PoC
+            revision = revisar_codigo_con_llm(diferencias, cliente)
+            print(revision)
+            #comentar_en_pr(numero_pr, f"#### Archivo: `{archivo}`\n{revision}")
 
         logger.info("Proceso de revision de codigo con LLM completado con exito.")
     except Exception as e:
