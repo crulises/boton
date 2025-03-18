@@ -90,8 +90,9 @@ def revisar_codigo_con_llm(diff_codigo, cliente):
         message_text = [
             p,
             {"role": "user",
-            "content": diff_codigo}
+            "content": str(diff_codigo)}
         ]
+        logger.info(f"difference: {type(diff_codigo)}")
         logger.info(f"Message Text: {message_text}")
         try:
           response = cliente.chat.completions.create(
