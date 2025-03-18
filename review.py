@@ -92,6 +92,7 @@ def revisar_codigo_con_llm(diff_codigo, cliente):
             {"role": "user",
             "content": diff_codigo}
         ]
+        logger.info(f"Message Text: {message_text}")
         try:
           response = cliente.chat.completions.create(
               model="openai_code_review",
