@@ -83,7 +83,8 @@ def revisar_codigo_con_llm(diff_codigo, cliente):
     p = None
     with open(PROMPT_FILE, "r") as f:
         p = yaml.safe_load(f)
-    prompts = [{"role": "developer","content": prompt["prompt"]} for prompt in p["prompts"]] 
+    prompts = [{"role": "developer", "content": prompt["prompt"]} for prompt in p["prompts"]] 
+    logger.info(f"Prompts: {prompts}")
     responses = []
     for p in prompts:
         message_text = [
