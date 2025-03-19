@@ -67,14 +67,17 @@ def revisar_codigo_con_llm(diff_codigo, cliente):
     p = None
     with open(PROMPT_FILE, "r") as f:
         p = yaml.safe_load(f)
-    prompts = [{"role": "developer","content": prompt["prompt"]} for prompt in p["prompts"]] 
+    prompts = [{"role": "developer", "content": prompt["prompt"]} for prompt in p["prompts"]] 
+    logger.info(f"Prompts: {prompts}")
     responses = []
     for p in prompts:
         message_text = [
             p,
             {"role": "user",
-            "content": diff_codigo}
+            "content": str(diff_codigo)}
         ]
+        logger.info(f"difference: {type(diff_codigo)}")
+        logger.info(f"Message Text: {message_text}")
         try:
           response = cliente.chat.completions.create(
               model="openai_code_review",
