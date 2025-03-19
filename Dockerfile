@@ -1,8 +1,8 @@
 FROM python:3.9-slim
 
 WORKDIR /app
-COPY review.py .
+COPY boton/ .
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-ENTRYPOINT ["python", "/app/review.py"]
+ENTRYPOINT ["python", "/app/boton/entrypoint.py"]
