@@ -5,18 +5,12 @@ import requests
 import yaml
 from openai import AzureOpenAI
 
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+# GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 LLM_ENDPOINT = os.getenv("LLM_ENDPOINT")
 API_KEY = os.getenv("API_KEY")
 PROMPT_FILE = os.getenv("PROMPT_FILE")
-REPOSITORIO_GITHUB = os.getenv("GITHUB_REPOSITORY")
-EVENTO_GITHUB = os.getenv("GITHUB_EVENT_PATH")
-# Modificar para poder optar por proveedor
-cliente = AzureOpenAI(
-   azure_endpoint=LLM_ENDPOINT,
-   api_key=API_KEY,
-   api_version="2024-05-01-preview",
-)
+# REPOSITORIO_GITHUB = os.getenv("GITHUB_REPOSITORY")
+# EVENTO_GITHUB = os.getenv("GITHUB_EVENT_PATH")
 
 logging.basicConfig(
     level=logging.INFO,
@@ -28,17 +22,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-def obtener_numero_pr():
-    """Extrae el numero del Pull Request desde el evento de GitHub."""
-    try:
-        with open(EVENTO_GITHUB, "r") as f:
-            datos_evento = json.load(f)
-        numero_pr = datos_evento["pull_request"]["number"]
-        logger.info(f"Numero del PR: {numero_pr}")
-        return numero_pr
-    except Exception as e:
-        logger.error(f"No se pudo obtener el numero del PR: {e}")
-        raise
+
 
 
 def obtener_archivos_modificados(numero_pr):
