@@ -1,7 +1,7 @@
 FROM python:3.9-slim
 
 WORKDIR /app
-COPY boton/ .
+COPY boton/ /app/boton/
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
