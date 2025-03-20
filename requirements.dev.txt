@@ -1,0 +1,6 @@
+fuzzywuzzy==0.18.0
+openai==1.66.3
+pytest==8.3.5
+PyYAML==6.0.2
+requests==2.32.3
+responses==0.25.7

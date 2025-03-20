@@ -3,25 +3,30 @@ description: "Realiza revision de codigo basandose en modelos LLMs, aunque por a
 author: "Alguien misterioso"
 
 inputs:
+  llm_provider:
+    description: "Proveedor de LLM a utilizar."
+    required: true
+    default: "azure_openai"
   llm_endpoint:
     description: "Endpoint para la API del LLM"
     required: true
-  api_key:
+  llm_api_key:
     description: "API key para el servicio de LLM"
     required: true
   github_token:
     description: "El token de github para poder postear comentarios"
     required: true
   prompt_file:
-    description: "Directorio en donde se encuentra el archivo con prompts. Default: .github/prompts.yml"
+    description: "Archivo que contiene los prompts a utilizar en la corrida. Default: .github/prompts.yml"
     required: false
-    default: ".github/prompts.yml"
+    default: ".configs/prompts.yml"
 
 runs:
   using: "docker"
   image: "Dockerfile"
   env:
+    LLM_PROVIDER: ${{ inputs.llm_provider }}
     LLM_ENDPOINT: ${{ inputs.llm_endpoint }}
-    API_KEY: ${{ inputs.api_key }}
+    LLM_API_KEY: ${{ inputs.llm_api_key }}
     GITHUB_TOKEN: ${{ inputs.github_token }}
     PROMPT_FILE: ${{ inputs.prompt_file }}

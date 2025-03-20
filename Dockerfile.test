@@ -1,0 +1,8 @@
+FROM python:3.9-slim
+
+WORKDIR /app
+COPY boton/ /app/boton/
+COPY requirements.txt .
+COPY tests/_run_local/*.py /app/boton/tests/
+RUN pip install -r requirements.txt
+ENV PYTHONPATH=/app
