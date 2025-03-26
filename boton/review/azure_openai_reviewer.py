@@ -77,7 +77,7 @@ class AzureOpenAIReviewer(BaseReviewer):
             review = self.review_single(prompt=p, diff_codigo=diff_codigo)
             responses.append(review)
 
-        return responses
+        return " ".join(responses)
     
     def post_process_responses(self) -> list:
         raise NotImplementedError()
