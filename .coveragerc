@@ -1,0 +1,2 @@
+omit = boton/review/azure_openai_reviewer.py
+omit = boton/review/base_reviewer.py
