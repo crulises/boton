@@ -1,4 +1,4 @@
-from boton import REVIEWERS_DISPONIBLES, LLM_PROVIDER, LLM_ENDPOINT, API_KEY, PROMPT_FILE
+from boton import REVIEWERS_DISPONIBLES, LLM_PROVIDER, LLM_ENDPOINT, LLM_API_KEY, PROMPT_FILE
 from boton.interfaces.github_interface import GitHubInterface
 from boton.utils.logger import BotonLogger
 
@@ -28,7 +28,7 @@ def review():
         return
     
     # Consideramos el proveedor de LLM a utilizar, por defecto vamos con "azure_openai"
-    c = rvwr(endpoint=LLM_ENDPOINT, prompt_file=PROMPT_FILE, api_key=API_KEY)
+    c = rvwr(endpoint=LLM_ENDPOINT, prompt_file=PROMPT_FILE, api_key=LLM_API_KEY)
     revision = c.review_w_all_prompts(diff_codigo=diffs_codigo_str)
     gh.comment_pr(numero=numero_pr, comentario=revision)
 
