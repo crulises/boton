@@ -80,6 +80,11 @@ class GitHubInterface:
         header = self.base_header
         header["Accept"] = "application/vnd.github.v3+json"
 
+        logger.info(f"--------Lo que le mandamos a Github--------")
+        logger.info(f"Header: {header}")
+        logger.info(f"Comentario: {comentario}")
+        logger.info(f"--------Find lo que le mandamos a Github--------")
+
         try:
             datos = {"body": f"{prefijo_comentario}\n\n{comentario}"}
             res = requests.post(url, json=datos, headers=header)
