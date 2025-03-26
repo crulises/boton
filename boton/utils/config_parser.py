@@ -37,7 +37,7 @@ class BotonConfigParser:
             logger.error(f"Error: Sintaxis invalida en '{f}': {e}")
             self.config = {}
     
-    def get_prompts(self, attr: str, valor: str) -> List[str]:
+    def get_prompts(self, attr: str = None, valor: str = None) -> List[str]:
         """
         Obtiene una lista de prompts del archivo de configuración. Si `attr` o `valor` es es nulo
         se devuelven todos los prompts. Si se especifica un atributo y valor, se devuelven los prompts
