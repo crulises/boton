@@ -30,7 +30,7 @@ def review():
     # Consideramos el proveedor de LLM a utilizar, por defecto vamos con "azure_openai"
     c = rvwr(endpoint=LLM_ENDPOINT, prompt_file=PROMPT_FILE, api_key=LLM_API_KEY)
     revision = c.review_w_all_prompts(diff_codigo=diffs_codigo_str)
-    gh.comment_pr(numero=numero_pr, comentario=revision)
+    gh.comment_pr(numero_pr=numero_pr, comentario=revision)
 
 if __name__ == "__main__":
     review()
