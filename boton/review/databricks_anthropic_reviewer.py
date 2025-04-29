@@ -1,5 +1,5 @@
 from typing import Any
-from anthropic import Anthropic
+from openai import OpenAI
 
 from boton.review.base_reviewer import BaseReviewer
 from boton.utils.logger import BotonLogger
@@ -12,13 +12,10 @@ class DatabricksAnthropicReviewer(BaseReviewer):
             endpoint: str, 
             prompt_file: str, 
             api_key: str,
-            api_version: str = "2024-05-01-preview"
         ) -> None:
         super().__init__(prompt_file)
-        self.reviewer = Anthropic(
-            azure_endpoint=endpoint,
-            api_key=api_key,
-            api_version=api_version,
+        self.reviewer = OpenAI(
+            api_key=api_key, base_url=endpoint
         )
     
     def pre_process_prompts(self) -> list:
@@ -31,17 +28,16 @@ class DatabricksAnthropicReviewer(BaseReviewer):
     def review_single(self,  
                       prompt: str, 
                       diff_codigo: str, 
-                      model: str = "openai_code_review",
+                      model: str = "claude-3-7-sonnet-20250219", # TODO: Esto por ahi lo vamos a tener que cambiar
                       reviewer_temperature: float = 0.0,
                       reviewer_top_p: float = 0.95,
-                      reviewer_frequency_penalty: float = 0.0,
-                      reviewer_presence_penalty: float = 0.0,
-                      reviewer_stop: Any = None) -> str:
+                      reviewer_stop: Any = None
+                      ) -> str:
         
         # Payload a ser enviado al LLM, esto puede variar segun el proveedor/modelo/endpoint/api/etc.
         message_text = [
             {
-                "role": "developer",
+                "role": "system",
                 "content": prompt
             },
             {
@@ -56,17 +52,15 @@ class DatabricksAnthropicReviewer(BaseReviewer):
                 messages=message_text,
                 temperature=reviewer_temperature,
                 top_p=reviewer_top_p,
-                frequency_penalty=reviewer_frequency_penalty,
-                presence_penalty=reviewer_presence_penalty,
                 stop=reviewer_stop
             )
             
             return (response.choices[0].message.content.strip() 
                     if response.choices 
-                    else f"No correct answer from OpenAI!\n{response.text}")
+                    else f"No correct answer from Anthropic!\n{response.text}")
             
         except Exception as e:
-            return f"OpenAI failed to generate a review: {e}"
+            return f"Anthropic failed to generate a review: {e}"
 
     def review_w_all_prompts(self, diff_codigo: str) -> str:
         prompts = self.config.get_prompts()
