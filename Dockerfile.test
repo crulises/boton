@@ -4,5 +4,6 @@ WORKDIR /app
 COPY boton/ /app/boton/
 COPY requirements.txt .
 COPY tests/_run_local/*.py /app/boton/tests/
+COPY tests/_run_local/*.yml /app/boton/tests/
 RUN pip install -r requirements.txt
 ENV PYTHONPATH=/app
