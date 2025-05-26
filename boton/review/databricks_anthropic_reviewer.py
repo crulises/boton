@@ -21,8 +21,11 @@ class DatabricksAnthropicReviewer(BaseReviewer):
             api_version=api_version,
         )
     
-    def pre_process_prompts(self) -> list:
-        raise NotImplementedError()
+    # deuda tecnica manejo de prompts
+    def pre_process_prompts(self) -> str:
+        base = self.__filtrar_por_attr("tipo", "base")
+        reglas = self.__filtrar_por_attr("tipo", "regla")
+        return "\n".join(base + reglas)       
     
     def review(self, prompt: str) -> str:
         # Esto con el fin de cumplir con la clase abstracta 
@@ -70,12 +73,14 @@ class DatabricksAnthropicReviewer(BaseReviewer):
 
     def review_w_all_prompts(self, diff_codigo: str) -> str:
         prompts = self.config.get_prompts()
+        prompts_preprocessed = pre_process_prompts(prompts) 
         responses = []
         
-        for i, p in enumerate(prompts):    
-            logger.info(f"Revisando prompt {i+1}/{len(prompts)}")
-            review = self.review_single(prompt=p, diff_codigo=diff_codigo)
-            responses.append(review)
+        # si se implementan multiples scopes una posible solucion podria ser iterar
+        # for i, p in enumerate(prompts):    
+        logger.info(f"Revisando prompt {prompts_preprocessed}")
+        review = self.review_single(prompt=prompts_preprocessed, diff_codigo=diff_codigo)
+        responses.append(review)
 
         return " ".join(responses)
     
