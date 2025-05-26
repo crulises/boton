@@ -22,8 +22,8 @@ class AzureOpenAIReviewer(BaseReviewer):
         )
     
     def pre_process_line(self) -> str:
-        base = self.__filtrar_por_attr("tipo", "base")
-        reglas = self.__filtrar_por_attr("tipo", "regla")
+        base = self.config.get_prompts("tipo", "base")
+        reglas = self.config.get_prompts("tipo", "regla")
         return "\n".join(base + reglas)
     
     def pre_process_prompts(self) -> dict:
@@ -82,7 +82,7 @@ class AzureOpenAIReviewer(BaseReviewer):
             return f"OpenAI failed to generate a review: {e}"
 
     def review_w_all_prompts(self, diff_codigo: str) -> str:
-        prompts = self.config.get_prompts()
+        prompts = ""
         responses = []
         
         """
@@ -91,7 +91,7 @@ class AzureOpenAIReviewer(BaseReviewer):
             review = self.review_single(prompt=p, diff_codigo=diff_codigo)
             responses.append(review)
         """
-        prompts = self.pre_process_prompts(prompts)
+        prompts = self.pre_process_prompts()
 
         # ToDo: Desing multiscope review
         # responses = review(prompts, diff_codigo)
