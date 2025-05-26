@@ -16,7 +16,7 @@ def review():
     assert rvwr is not None, f"El proveedor de LLM {LLM_PROVIDER} no se encuentra disponible. Los disponibles hasta el momento son {REVIEWERS_DISPONIBLES.keys()}"
 
     # Cuestiones relacionadas a github para el manejo de PRs
-    # gh = GitHubInterface()
+    gh = GitHubInterface()
     # numero_pr = gh.get_pr_number()
 
     # Las diferencias de código en el PR vienen en una lista, se unen todos los elementos en un solo string
@@ -85,7 +85,7 @@ index 8ee4cb3..0000000
     # Consideramos el proveedor de LLM a utilizar, por defecto vamos con "azure_openai"
     c = rvwr(endpoint=LLM_ENDPOINT, prompt_file=PROMPT_FILE, api_key=LLM_API_KEY)
     revision = c.review_w_all_prompts(diff_codigo=diffs_codigo_str)
-    # gh.comment_pr(numero_pr=numero_pr, comentario=revision)
+    gh.comment_pr(numero_pr=76, comentario=revision)
     logger.info(revision)
 
 if __name__ == "__main__":
