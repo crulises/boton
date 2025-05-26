@@ -21,11 +21,24 @@ class AzureOpenAIReviewer(BaseReviewer):
             api_version=api_version,
         )
     
-    def pre_process_prompts(self) -> list:
-        raise NotImplementedError()
+    def pre_process_line(self) -> str:
+        base = self.__filtrar_por_attr("tipo", "base")
+        reglas = self.__filtrar_por_attr("tipo", "regla")
+        return "\n".join(base + reglas)
     
+    def pre_process_prompts(self) -> dict:
+        line_prompt = self.pre_process_line()
+        file_prompt = []     # Placeholder for future implementation
+        project_prompt = []  # Placeholder for future implementation
+    
+        prompts = {
+            "line": line_prompt,
+            "file": file_prompt,
+            "project": project_prompt,
+        }
+        return prompts
+
     def review(self, prompt: str) -> str:
-        # Esto con el fin de cumplir con la clase abstracta 
         raise NotImplementedError()
 
     def review_single(self,  
@@ -72,12 +85,20 @@ class AzureOpenAIReviewer(BaseReviewer):
         prompts = self.config.get_prompts()
         responses = []
         
+        """
         for i, p in enumerate(prompts):    
             logger.info(f"Revisando prompt {i+1}/{len(prompts)}")
             review = self.review_single(prompt=p, diff_codigo=diff_codigo)
             responses.append(review)
+        """
+        prompts = self.pre_process_prompts(prompts)
 
-        return " ".join(responses)
-    
+        # ToDo: Desing multiscope review
+        # responses = review(prompts, diff_codigo)
+        response = self.review_single(prompts["line"], diff_codigo)
+
+        # return " ".join(responses)
+        return response
+
     def post_process_responses(self) -> list:
         raise NotImplementedError()
