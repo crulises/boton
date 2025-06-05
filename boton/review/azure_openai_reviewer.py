@@ -96,9 +96,10 @@ class AzureOpenAIReviewer(BaseReviewer):
         # ToDo: Desing multiscope review
         # responses = review(prompts, diff_codigo)
         response = self.review_single(prompts["line"], diff_codigo)
+        response = self.post_process_responses(response)
 
         # return " ".join(responses)
         return response
 
     def post_process_responses(self) -> list:
-        raise NotImplementedError()
+        # cambiar caracteres que invalidan el json
