@@ -3,6 +3,7 @@ from openai import AzureOpenAI
 
 from boton.review.base_reviewer import BaseReviewer
 from boton.utils.logger import BotonLogger
+import re
 
 logger = BotonLogger.get_logger()
 
