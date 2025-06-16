@@ -96,7 +96,7 @@ class AzureOpenAIReviewer(BaseReviewer):
         # ToDo: Desing multiscope review
         # responses = review(prompts, diff_codigo)
         response = self.review_single(prompts["line"], diff_codigo)
-        response = self.post_process_responses(response)
+        response = post_process_responses(response)
 
         # return " ".join(responses)
         return response
