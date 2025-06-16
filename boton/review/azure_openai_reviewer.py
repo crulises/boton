@@ -96,7 +96,7 @@ class AzureOpenAIReviewer(BaseReviewer):
         # ToDo: Desing multiscope review
         # responses = review(prompts, diff_codigo)
         response = self.review_single(prompts["line"], diff_codigo)
-        response = post_process_responses(response)
+        response = self.post_process_responses(response)
 
         # return " ".join(responses)
         return response
@@ -105,5 +105,6 @@ class AzureOpenAIReviewer(BaseReviewer):
     def post_process_responses(self, response : str) -> str:
         # Capaz conviene agregar response como atributo de la clase
         response.replace("'",'"')  # cambiar comillas dobles por comillas escapadas
+        logger.info(f"Formatted response from OpenAI: {response}")
         return response  # retornar la respuesta procesada
         # cambiar caracteres que invalidan el json
