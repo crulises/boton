@@ -3,7 +3,6 @@ from openai import AzureOpenAI
 
 from boton.review.base_reviewer import BaseReviewer
 from boton.utils.logger import BotonLogger
-# import re
 
 logger = BotonLogger.get_logger()
 
@@ -102,10 +101,9 @@ class AzureOpenAIReviewer(BaseReviewer):
         # return " ".join(responses)
         return response
 
-    def post_process_responses(self, response : str) -> dict:
+    #poner dict en lugar de str
+    def post_process_responses(self, response : str) -> str:
         # Capaz conviene agregar response como atributo de la clase
-        response.replace("\'","\"")  # cambiar comillas dobles por comillas escapadas
-        #response.replace('"','\"')  # cambiar comillas dobles por comillas escapadas
-        # response = re.escape(response) # escapar caracteres especiales
+        response.replace("'",'"')  # cambiar comillas dobles por comillas escapadas
         return response  # retornar la respuesta procesada
         # cambiar caracteres que invalidan el json
