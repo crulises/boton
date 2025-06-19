@@ -104,7 +104,7 @@ class AzureOpenAIReviewer(BaseReviewer):
     #poner dict en lugar de str
     def post_process_responses(self, response : str) -> str:
         # Capaz conviene agregar response como atributo de la clase
-        response = response.replace('\"','\\"')  # cambiar comillas dobles por comillas escapadas
+        response = response.replace('\"',"'")  # cambiar comillas dobles por comillas escapadas
         logger.info(f"Formatted response from OpenAI: {response}")
         return response  # retornar la respuesta procesada
         # cambiar caracteres que invalidan el json
