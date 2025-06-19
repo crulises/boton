@@ -87,7 +87,7 @@ class GitHubInterface:
 
         try:
             datos = {"body": f"""{prefijo_comentario}\n\n{comentario}"""}
-            logger.info(datos)
+            logger.info(json.dumps(datos, indent=4))
             res = requests.post(url, json=datos, headers=header)
             res.raise_for_status()
             logger.info(f"Comentario publicado en el PR #{numero_pr}")
