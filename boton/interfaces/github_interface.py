@@ -9,8 +9,7 @@ logger = BotonLogger.get_logger()
 
 class GitHubInterface:
     def __init__(self) -> None:
-        self.pr_template = "https://api.github.com/repos/{github_repo}/issues/{numero_pr}/{entidad}"
-        #self.pr_template = "https://api.github.com/repos/{github_repo}/pulls/{numero_pr}/{entidad}"
+        self.pr_template = "https://api.github.com/repos/{github_repo}/pulls/{numero_pr}/{entidad}"
         self.base_header = {"Authorization": f"Bearer {os.getenv('GITHUB_TOKEN')}"}
         self.GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
         self.GITHUB_EVENT_PATH = os.getenv("GITHUB_EVENT_PATH")
