@@ -85,8 +85,7 @@ index 8ee4cb3..0000000
     # Consideramos el proveedor de LLM a utilizar, por defecto vamos con "azure_openai"
     c = rvwr(endpoint=LLM_ENDPOINT, prompt_file=PROMPT_FILE, api_key=LLM_API_KEY)
     revision = c.review_w_all_prompts(diff_codigo=diffs_codigo_str)
-    logger.info(type(revision))
-    gh.comment_pr(numero_pr=77, comentario=revision)
+    gh.comment_pr(numero_pr=89, comentario=revision)
 
 if __name__ == "__main__":
     review()

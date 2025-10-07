@@ -9,7 +9,8 @@ logger = BotonLogger.get_logger()
 
 class GitHubInterface:
     def __init__(self) -> None:
-        self.pr_template = "https://api.github.com/repos/{github_repo}/pulls/{numero_pr}/{entidad}"
+        self.pr_template = "https://api.github.com/repos/{github_repo}/issues/{numero_pr}/{entidad}"
+        #self.pr_template = "https://api.github.com/repos/{github_repo}/pulls/{numero_pr}/{entidad}"
         self.base_header = {"Authorization": f"Bearer {os.getenv('GITHUB_TOKEN')}"}
         self.GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
         self.GITHUB_EVENT_PATH = os.getenv("GITHUB_EVENT_PATH")
@@ -79,6 +80,8 @@ class GitHubInterface:
         url = self.pr_template.format(github_repo=self.GITHUB_REPOSITORY, numero_pr=numero_pr, entidad="comments")
         header = self.base_header
         header["Accept"] = "application/vnd.github.v3+json"
+        header["X-GitHub-Api-Version"] = "2022-11-28"
+        header["Content-Type"] = "application/json"
 
         logger.info(f"--------Lo que le mandamos a Github--------")
         logger.info(f"Header: {header}")
@@ -87,11 +90,10 @@ class GitHubInterface:
 
         try:
             datos = {"body": f"""{prefijo_comentario}\n\n{comentario}"""}
-            logger.info(json.dumps(datos, indent=4))
+            logger.info(datos)
             res = requests.post(url, json=datos, headers=header)
             res.raise_for_status()
             logger.info(f"Comentario publicado en el PR #{numero_pr}")
         except requests.exceptions.RequestException as e:
-            logger.info(datos)
             logger.error(f"Error al publicar el comentario en el PR: {e}")
             raise
