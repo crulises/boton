@@ -28,7 +28,7 @@ class GitHubInterface:
 
     def get_files_changed(self, numero_pr: int) -> list:
         """Obtiene la lista de archivos modificados en el Pull Request."""
-        url = self.pr_template.format(github_repo=self.GITHUB_REPOSITORY, github_type=pulls, numero_pr=numero_pr, entidad="files")
+        url = self.pr_template.format(github_repo=self.GITHUB_REPOSITORY, github_type="pulls", numero_pr=numero_pr, entidad="files")
 
         try:
             res = requests.get(url, headers=self.base_header)
@@ -44,7 +44,7 @@ class GitHubInterface:
                        numero_pr: int, 
                        ruta_archivo: str) -> str:
         """Obtiene el diff de un archivo especifico en el PR."""
-        url = self.pr_template.format(github_repo=self.GITHUB_REPOSITORY, numero_pr=numero_pr, entidad="files")
+        url = self.pr_template.format(github_repo=self.GITHUB_REPOSITORY, github_type="pulls", numero_pr=numero_pr, entidad="files")
 
         try:
             res = requests.get(url, headers=self.base_header)
@@ -76,7 +76,7 @@ class GitHubInterface:
                    comentario: str, 
                    prefijo_comentario: str ="### Revision de Codigo con LLM") -> None:
         """Publica un comentario en el PR con los resultados del LLM."""
-        url = self.pr_template.format(github_repo=self.GITHUB_REPOSITORY, github_type=issues, numero_pr=numero_pr, entidad="comments")
+        url = self.pr_template.format(github_repo=self.GITHUB_REPOSITORY, github_type="issues", numero_pr=numero_pr, entidad="comments")
         header = self.base_header
         header["Accept"] = "application/vnd.github.v3+json"
         header["X-GitHub-Api-Version"] = "2022-11-28"
