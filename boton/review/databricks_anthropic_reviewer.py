@@ -85,7 +85,7 @@ class DatabricksAnthropicReviewer(BaseReviewer):
 
     def review_w_all_prompts(self, diff_codigo: str) -> str:
         prompts = self.config.get_prompts()
-        prompts_preprocessed = pre_process_prompts(prompts) 
+        prompts_preprocessed = self.pre_process_prompts(prompts) 
         responses = []
         
         # si se implementan multiples scopes una posible solucion podria ser iterar
