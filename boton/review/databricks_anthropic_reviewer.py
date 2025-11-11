@@ -22,11 +22,6 @@ class DatabricksAnthropicReviewer(BaseReviewer):
             api_version=api_version,
         )
     
-    # deuda tecnica manejo de prompts
-    def pre_process_prompts(self) -> str:
-        base = self.__filtrar_por_attr("tipo", "base")
-        reglas = self.__filtrar_por_attr("tipo", "regla")
-        return "\n".join(base + reglas)       
     def pre_process_line(self) -> str:
         base = self.__filtrar_por_attr("tipo", "base")
         reglas = self.__filtrar_por_attr("tipo", "regla")
