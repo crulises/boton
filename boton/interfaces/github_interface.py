@@ -82,16 +82,9 @@ class GitHubInterface:
         header["X-GitHub-Api-Version"] = "2022-11-28"
         header["Content-Type"] = "application/json"
 
-        logger.info(f"--------Lo que le mandamos a Github--------")
-        logger.info(f"Header: {header}")
-        logger.info(f"Comentario: {comentario}")
-        logger.info(f"--------Find lo que le mandamos a Github--------")
-
         try:
             datos = {"body": f"""{prefijo_comentario}\n\n{comentario}"""}
-            logger.info(datos)
             res = requests.post(url, json=datos, headers=header)
-            res.raise_for_status()
             logger.info(f"Comentario publicado en el PR #{numero_pr}")
         except requests.exceptions.RequestException as e:
             logger.error(f"Error al publicar el comentario en el PR: {e}")
