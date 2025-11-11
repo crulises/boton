@@ -22,13 +22,11 @@ class DatabricksAnthropicReviewer(BaseReviewer):
             api_version=api_version,
         )
     
-<<<<<<< HEAD
     # deuda tecnica manejo de prompts
     def pre_process_prompts(self) -> str:
         base = self.__filtrar_por_attr("tipo", "base")
         reglas = self.__filtrar_por_attr("tipo", "regla")
         return "\n".join(base + reglas)       
-=======
     def pre_process_line(self) -> str:
         base = self.__filtrar_por_attr("tipo", "base")
         reglas = self.__filtrar_por_attr("tipo", "regla")
@@ -45,7 +43,6 @@ class DatabricksAnthropicReviewer(BaseReviewer):
             "project": project_prompt,
         }
         return prompts
->>>>>>> 21f6cad (added pre_process_line function)
     
     def review(self, prompt: str) -> str:
         # Esto con el fin de cumplir con la clase abstracta 
