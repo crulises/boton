@@ -3,6 +3,7 @@ from anthropic import Anthropic
 
 from boton.review.base_reviewer import BaseReviewer
 from boton.utils.logger import BotonLogger
+from boton.utils.config_parser import __filtrar_por_attr
 
 logger = BotonLogger.get_logger()
 
@@ -21,11 +22,22 @@ class DatabricksAnthropicReviewer(BaseReviewer):
             api_version=api_version,
         )
     
-    # deuda tecnica manejo de prompts
-    def pre_process_prompts(self) -> str:
+    def pre_process_line(self) -> str:
         base = self.__filtrar_por_attr("tipo", "base")
         reglas = self.__filtrar_por_attr("tipo", "regla")
-        return "\n".join(base + reglas)       
+        return "\n".join(base + reglas)
+    
+    def pre_process_prompts(self) -> dict:
+        line_prompt = self.pre_process_line()
+        file_prompt = []     # Placeholder for future implementation
+        project_prompt = []  # Placeholder for future implementation
+    
+        prompts = {
+            "line": line_prompt,
+            "file": file_prompt,
+            "project": project_prompt,
+        }
+        return prompts
     
     def review(self, prompt: str) -> str:
         # Esto con el fin de cumplir con la clase abstracta 
