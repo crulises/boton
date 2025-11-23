@@ -20,8 +20,8 @@ def review():
     # numero_pr = gh.get_pr_number()
 
     # Las diferencias de código en el PR vienen en una lista, se unen todos los elementos en un solo string
-    # diffs_codigo = gh.get_all_diffs()
-    diffs_codigo_str = """diff --git a/Notebook_con_fallas.sql b/Notebook_con_fallas.sql
+    # code_diffs = gh.get_all_diffs()
+    code_diffs_str = """diff --git a/Notebook_con_fallas.sql b/Notebook_con_fallas.sql
 deleted file mode 100644
 index 8ee4cb3..0000000
 --- a/Notebook_con_fallas.sql
@@ -78,13 +78,13 @@ index 8ee4cb3..0000000
 --- MAGIC // Leer un archivo Parquet en un DataFrame
 --- MAGIC val df = spark.read.parquet("path/to/bronze_prod.parquet")"""
 
-    # if len(diffs_codigo) == 0:
+    # if len(code_diffs) == 0:
         # logger.warning("No se encontraron diferencias de códigos en el PR.")
         # return
     
     # Consideramos el proveedor de LLM a utilizar, por defecto vamos con "azure_openai"
     c = rvwr(endpoint=LLM_ENDPOINT, prompt_file=PROMPT_FILE, api_key=LLM_API_KEY)
-    revision = c.review_w_all_prompts(diff_codigo=diffs_codigo_str)
+    revision = c.review(code_diff=code_diffs_str)
     gh.comment_pr(numero_pr=89, comentario=revision)
 
 if __name__ == "__main__":

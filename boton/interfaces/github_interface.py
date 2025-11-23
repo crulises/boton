@@ -32,6 +32,8 @@ class GitHubInterface:
 
         try:
             res = requests.get(url, headers=self.base_header)
+            logger.info("---------------repuesta con los archivos-------------")
+            logger.info(res.json())
             res.raise_for_status()
             archivos_modificados = [archivo["filename"] for archivo in res.json()]
             logger.info(f"Archivos modificados en PR #{numero_pr}: {archivos_modificados}")

@@ -20,30 +20,49 @@ class AzureOpenAIReviewer(BaseReviewer):
             api_key=api_key,
             api_version=api_version,
         )
+        # this is a dict bc for now comment size it's not a problem but if you run into multiple responses, the dict makes it easier to have multiple comments. on top of this you could have lists as the values and make each value of the list be a diff comment
+        self.responses = {
+            "line": '',
+            "file": 'Placeholder for future implementation',
+            "project": 'Placeholder for future implementation',
+        }
+        self.add_pre_process_fn(self.pre_process_line)
+        self.add_post_process_fn(self.post_process_special_chars)
     
     def pre_process_line(self) -> str:
         base = self.config.get_prompts("tipo", "base")
         reglas = self.config.get_prompts("tipo", "regla")
         return "\n".join(base + reglas)
     
-    def pre_process_prompts(self) -> dict:
-        line_prompt = self.pre_process_line()
-        file_prompt = []     # Placeholder for future implementation
-        project_prompt = []  # Placeholder for future implementation
-    
+    # re think when implementing other scopes, the append won't cut it
+    def run_pre_process_fns(self) -> dict:
+        prompt_list = []
+        for fn in self.pre_process_fns:
+            result = fn()
+            prompt_list.append(result)
+
         prompts = {
-            "line": line_prompt,
-            "file": file_prompt,
-            "project": project_prompt,
+            "line": prompt_list[0],
+            "file": 'Placeholder for future implementation',
+            "project": 'Placeholder for future implementation',
         }
         return prompts
 
-    def review(self, prompt: str) -> str:
-        raise NotImplementedError()
+    def post_process_special_chars(self, responses) -> None:
+        for key, value in responses.items():
+            if isinstance(value, str):
+                cleaned = value.replace('\"',"'")
+                responses[key] = cleaned
+
+    def run_post_process_fns(self, responses) -> dict:
+        for fn in self.post_process_fns:
+            fn(responses)
+
+        return responses
 
     def review_single(self,  
                       prompt: str, 
-                      diff_codigo: str, 
+                      code_diff: str, 
                       model: str = "openai_code_review",
                       reviewer_temperature: float = 0.0,
                       reviewer_top_p: float = 0.95,
@@ -59,7 +78,7 @@ class AzureOpenAIReviewer(BaseReviewer):
             },
             {
                 "role": "user",
-                "content": diff_codigo
+                "content": code_diff
             }
         ]
 
@@ -81,28 +100,41 @@ class AzureOpenAIReviewer(BaseReviewer):
         except Exception as e:
             return f"OpenAI failed to generate a review: {e}"
 
-    def review_w_all_prompts(self, diff_codigo: str) -> str:
+    def merge_responses(self, responses: dict) -> str:
+        merged_parts = []
+
+        for key, value in responses.items():
+            if not value:
+                continue  # skip None / empty strings
+            
+            # Normalize to string
+            text = str(value).strip()
+            
+            # Skip empty text
+            if text and "Placeholder" not in text:
+                merged_parts.append(text)
+
+        # Join each section with two new lines
+        return "\n\n".join(merged_parts)
+
+    # future work: add other scopes
+    def review(self, code_diff: str) -> str:
         prompts = ""
-        responses = []
         
         """
         for i, p in enumerate(prompts):    
             logger.info(f"Revisando prompt {i+1}/{len(prompts)}")
-            review = self.review_single(prompt=p, diff_codigo=diff_codigo)
+            review_result = self.review_single(prompt=p, code_diff=code_diff)
             responses.append(review)
         """
-        prompts = self.pre_process_prompts()
+        prompts = self.run_pre_process_fns()
 
-        # ToDo: Desing multiscope review
-        # responses = review(prompts, diff_codigo)
-        response = self.review_single(prompts["line"], diff_codigo)
-        response = self.post_process_responses(response)
+        line_review_result = self.review_single(prompts["line"], code_diff)
 
-        # return " ".join(responses)
-        return response
+        self.responses["line"] = line_review_result
+        
+        clean_responses = self.run_post_process_fns(self.responses)
 
-    #poner dict en lugar de str
-    def post_process_responses(self, response : str) -> str:
-        # Capaz conviene agregar response como atributo de la clase
-        response = response.replace('\"',"'")  # cambiar comillas dobles por comillas escapadas
-        return response  # retornar la respuesta procesada
+        merged_responses = self.merge_responses(clean_responses)
+
+        return merged_responses

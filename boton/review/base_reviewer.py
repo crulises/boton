@@ -8,6 +8,7 @@ class BaseReviewer(ABC):
         self.pre_process_fns = []
         self.post_process_fns = []
 
+    # adds fn to a fn list to be implemented and run into each class that inherits
     def add_pre_process_fn(self, fn: callable):
         self.pre_process_fns.append(fn)
 
@@ -15,13 +16,13 @@ class BaseReviewer(ABC):
         self.post_process_fns.append(fn)
 
     @abstractmethod
-    def review(self, prompt: str) -> str:
+    def review(self, code_diff) -> str:
         pass
-    
+
     @abstractmethod
-    def pre_process_prompts(self) -> list:
+    def run_pre_process_fns(self) -> dict:
         pass
-    
+
     @abstractmethod
-    def post_process_responses(self) -> list:
+    def run_post_process_fns(self) -> dict:
         pass
